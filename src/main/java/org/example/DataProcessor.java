@@ -8,20 +8,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DataProcessor {
     ExecutorService service = Executors.newCachedThreadPool();
     private final Map<String, Integer> taskResult = new HashMap<>();
+    private final AtomicInteger taskCounter = new AtomicInteger(0);
+    private final AtomicInteger activeTasks = new AtomicInteger(0);
 
     public void sendTasks(int number) {
-        AtomicInteger activeTasks = new AtomicInteger(1);
         for (int i = 1; i <= number; i++) {
-            activeTasks.incrementAndGet();
-            int finalI = i;
-            CompletableFuture.supplyAsync(() -> {
+            CompletableFuture<Integer> completableFuture = CompletableFuture.supplyAsync(() -> {
                 Integer res = 0;
-                try {res = new CalculateSumTask(listRandom(), "task" + activeTasks).call();} catch (Exception _) {}
+                try {res = new CalculateSumTask(listRandom(), "task" + taskCounter).call();} catch (Exception _) {}
                 return res;
-            }, service).thenAccept(result -> {
+            }, service);
+            taskCounter.incrementAndGet();
+            activeTasks.incrementAndGet();
+            completableFuture.thenAccept(result -> {
                 synchronized (taskResult){
-                    taskResult.put("task" + finalI, result);
+                    taskResult.put("task" + taskCounter, result);
                 }
+                activeTasks.decrementAndGet();
             });
 
         }
@@ -29,11 +32,13 @@ public class DataProcessor {
 
     }
 
+    public int getActiveTaskCount() {
+        return activeTasks.get();
+    }
+
     public Optional<Integer> resultByName(String task) {
         synchronized (taskResult) {
-            if (taskResult.containsKey(task)) {
-                return Optional.of(taskResult.get(task));
-            } else return Optional.empty();
+            return Optional.ofNullable(taskResult.get(task));
         }
 
     }

@@ -9,9 +9,9 @@ public class App {
     public static void main(String[] args) throws InterruptedException {
 
         DataProcessor dataProcessor = new DataProcessor();
-        dataProcessor.sendTasks(30);
-        Thread.sleep(2000);
-        Optional<Integer> res = dataProcessor.resultByName("task4");
+        dataProcessor.sendTasks(1000);
+        System.out.println("активные задачи" + dataProcessor.getActiveTaskCount());
+        Optional<Integer> res = dataProcessor.resultByName("task409");
         if (res.isEmpty()){
             System.out.println("нет данных");
         }

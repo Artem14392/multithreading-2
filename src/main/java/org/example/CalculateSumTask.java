@@ -1,9 +1,7 @@
 package org.example;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 
 
 public class CalculateSumTask implements Callable<Integer> {
@@ -16,8 +14,9 @@ public class CalculateSumTask implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() throws InterruptedException {
         System.out.println("имя текущего потока: " + Thread.currentThread().getName() + " задача: " + task);
+        //Thread.sleep(2000);
         return list.stream().parallel()
                 .mapToInt(i -> i)
                 .sum();
