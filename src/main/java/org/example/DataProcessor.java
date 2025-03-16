@@ -3,6 +3,7 @@ package org.example;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 
 public class DataProcessor {
@@ -13,19 +14,15 @@ public class DataProcessor {
         AtomicInteger activeTasks = new AtomicInteger(1);
         for (int i = 1; i <= number; i++) {
             int taskNumber = activeTasks.getAndIncrement();
-            CompletableFuture<Integer> completableFuture = CompletableFuture.supplyAsync(() -> {
-                try {
-                    return new CalculateSumTask(listRandom(), "task" + taskNumber).call();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+            int finalI = i;
+            CompletableFuture.supplyAsync(() -> {
+                Integer res = 0;
+                try {res = new CalculateSumTask(listRandom(), "task" + taskNumber).call();} catch (Exception _) {}
+                return res;
+            }, service).thenAccept(result -> {
+                synchronized (taskResult){
+                    taskResult.put("task" + finalI, result);
                 }
-            }, service);
-
-            completableFuture.thenAccept(result -> {
-                synchronized (taskResult) {
-                    taskResult.put("task" + taskNumber, result);
-                }
-                activeTasks.decrementAndGet();
             });
 
         }

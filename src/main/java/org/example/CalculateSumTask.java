@@ -3,10 +3,11 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 
 public class CalculateSumTask implements Callable<Integer> {
-    private List<Integer> list = new ArrayList<>();
+    private final List<Integer> list;
     private final String task;
 
     public CalculateSumTask(List<Integer> list, String task){
@@ -17,7 +18,6 @@ public class CalculateSumTask implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         System.out.println("имя текущего потока: " + Thread.currentThread().getName() + " задача: " + task);
-        Thread.sleep(200);
         return list.stream().parallel()
                 .mapToInt(i -> i)
                 .sum();
