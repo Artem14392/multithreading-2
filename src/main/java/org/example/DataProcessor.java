@@ -3,7 +3,6 @@ package org.example;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 
 public class DataProcessor {
