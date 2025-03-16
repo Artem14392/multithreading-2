@@ -13,11 +13,11 @@ public class DataProcessor {
     public void sendTasks(int number) {
         AtomicInteger activeTasks = new AtomicInteger(1);
         for (int i = 1; i <= number; i++) {
-            int taskNumber = activeTasks.getAndIncrement();
+            activeTasks.incrementAndGet();
             int finalI = i;
             CompletableFuture.supplyAsync(() -> {
                 Integer res = 0;
-                try {res = new CalculateSumTask(listRandom(), "task" + taskNumber).call();} catch (Exception _) {}
+                try {res = new CalculateSumTask(listRandom(), "task" + activeTasks).call();} catch (Exception _) {}
                 return res;
             }, service).thenAccept(result -> {
                 synchronized (taskResult){
