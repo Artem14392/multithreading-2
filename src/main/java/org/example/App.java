@@ -10,7 +10,10 @@ public class App {
 
         DataProcessor dataProcessor = new DataProcessor();
         dataProcessor.sendTasks(1000);
-        System.out.println("активные задачи" + dataProcessor.getActiveTaskCount());
+        while (dataProcessor.getActiveTaskCount() > 0){
+            System.out.println("активные задачи " + dataProcessor.getActiveTaskCount());
+        }
+
         Optional<Integer> res = dataProcessor.resultByName("task409");
         if (res.isEmpty()){
             System.out.println("нет данных");

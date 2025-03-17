@@ -16,7 +16,7 @@ public class CalculateSumTask implements Callable<Integer> {
     @Override
     public Integer call() throws InterruptedException {
         System.out.println("имя текущего потока: " + Thread.currentThread().getName() + " задача: " + task);
-        //Thread.sleep(2000);
+        Thread.sleep(30);
         return list.stream().parallel()
                 .mapToInt(i -> i)
                 .sum();
