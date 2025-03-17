@@ -6,7 +6,7 @@ import java.util.Optional;
  * Hello world!
  */
 public class App {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
         DataProcessor dataProcessor = new DataProcessor();
         dataProcessor.sendTasks(1000);
